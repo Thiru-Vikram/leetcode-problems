@@ -2,6 +2,22 @@ package Graphs;
 
 import java.util.*;
 
+class Edge implements Comparable<Edge> {
+    int src, des, wt;
+
+    Edge(int src, int des, int wt) {
+        this.src = src;
+        this.des = des;
+        this.wt = wt;
+    }
+
+    // Implement compareTo for sorting by weight
+    @Override
+    public int compareTo(Edge other) {
+        return this.wt - other.wt;
+    }
+}
+
 public class DisjointSet {
 
     // Disjoint Set (Union–Find) – Revision Notes
@@ -32,19 +48,19 @@ public class DisjointSet {
         }
     }
 
-    public int findYourParent(int node) {
+    public int findParent(int node) {
         if (node == parent.get(node)) {
             return node;
         }
-        int ultimateParent = findYourParent(parent.get(node));
+        int ultimateParent = findParent(parent.get(node));
         parent.set(node, ultimateParent);
         return parent.get(node);
     }
 
     // here u will update the rank means height.
     public void unionByRank(int u, int v) {
-        int ulp_u = findYourParent(u);
-        int ulp_v = findYourParent(v);
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
         if (ulp_u == ulp_v)
             return;
         if (rank.get(ulp_u) < rank.get(ulp_v)) {
@@ -60,8 +76,8 @@ public class DisjointSet {
 
     // by size means it contains total nodes in that component.
     public void unionBySize(int u, int v) {
-        int ulp_u = findYourParent(u);
-        int ulp_v = findYourParent(v);
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
         if (ulp_u == ulp_v)
             return;
         if (size.get(ulp_u) < size.get(ulp_v)) {
@@ -71,6 +87,44 @@ public class DisjointSet {
             parent.set(ulp_v, ulp_u);
             size.set(ulp_u, size.get(ulp_v) + size.get(ulp_u));
         }
+    }
+
+    // kruskals algorithm.
+    // Time Complexity: O(E log E)
+    // Space Complexity: O(V + E)
+    public static int kruskalsAlgo(int v, ArrayList<ArrayList<ArrayList<Integer>>> adj) {
+
+        List<Edge> edges = new ArrayList<>();
+        // Build edge list from adjacency list
+        for (int i = 0; i < v; i++) {
+            for (int j = 0; j < adj.get(i).size(); j++) {
+                int adjNode = adj.get(i).get(j).get(0);
+                int wt = adj.get(i).get(j).get(1);
+                // Only add edge once (avoid duplicates in undirected graph)
+                if (i < adjNode) {
+                    edges.add(new Edge(i, adjNode, wt));
+                }
+            }
+        }
+
+        // Sort edges by weight
+        Collections.sort(edges);
+
+        DisjointSet ds = new DisjointSet(v);
+        int mstWt = 0;
+
+        for (int i = 0; i < edges.size(); i++) {
+            int u = edges.get(i).src;
+            int v_node = edges.get(i).des;
+            int wt = edges.get(i).wt;
+
+            // Use DisjointSet's find method
+            if (ds.findParent(u) != ds.findParent(v_node)) {
+                mstWt += wt;
+                ds.unionBySize(u, v_node);
+            }
+        }
+        return mstWt;
     }
 
     public static void main(String[] args) {
@@ -83,14 +137,14 @@ public class DisjointSet {
         ds.unionByRank(5, 6);
 
         // if 3 and 7 same or not
-        if (ds.findYourParent(3) == ds.findYourParent(7)) {
+        if (ds.findParent(3) == ds.findParent(7)) {
             System.out.println("Same");
         } else {
             System.out.println("Not Same");
         }
 
         ds.unionByRank(3, 7);
-        if (ds.findYourParent(3) == ds.findYourParent(7)) {
+        if (ds.findParent(3) == ds.findParent(7)) {
             System.out.println("Same");
         } else {
             System.out.println("Not Same");
