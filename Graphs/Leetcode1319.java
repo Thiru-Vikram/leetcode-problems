@@ -52,7 +52,8 @@ class DisjointSet {
     public int countComponents() {
         int components = 0;
         for (int i = 0; i < parent.size(); i++) {
-            if (parent.get(i) == i) { // This node is a root
+            int root = findParent(i);
+            if (root == i) { // This node is a root
                 components++;
             }
         }

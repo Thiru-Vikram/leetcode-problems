@@ -84,7 +84,8 @@ public class Leetcode721 {
                 continue;
             Collections.sort(mergeMail[i]);
             List<String> temp = new ArrayList<>();
-            temp.add(accounts.get(i).get(0));
+            int root = ds.findParent(i);
+            temp.add(accounts.get(root).get(0));
             for (String it : mergeMail[i]) {
                 temp.add(it);
             }

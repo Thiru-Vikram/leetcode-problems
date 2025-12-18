@@ -68,7 +68,8 @@ public class Leetcode947 {
 
         int cnt = 0;
         for (int i = 0; i < n; i++) {
-            if (ds.parent.get(i) == i) {
+            int root = ds.findParent(i);
+            if (root == i) {
                 cnt++;
             }
         }
