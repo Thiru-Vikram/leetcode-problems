@@ -36,6 +36,7 @@ public class Leetcode1 {
         return new int[] { -1, -1 };
     }
 
+    // 167. Two Sum II - Input Array Is Sorted
     // optimal - solution for sorted array.
     // tc is o(n) and sc is o(1).
     public int[] twoSum3(int[] arr, int target) {
@@ -46,7 +47,7 @@ public class Leetcode1 {
             int sum = arr[i] + arr[j];
 
             if (sum == target) {
-                return new int[] { i, j };
+                return new int[] { i + 1, j + 1 };
             } else if (sum < target) {
                 i++;
             } else if (sum > target) {
