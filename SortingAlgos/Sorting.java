@@ -105,11 +105,68 @@ public class Sorting {
         return arr;
     }
 
+    // quick sort
+    // 1. pick pivot, 1st or last or mid or random
+    // place pivot in its crt place in sorted arr
+    // 2. larger on left, smaller on right and swap
+    // 3. place pivot at crt pos
+    // reapet the process
+    // tc is Best Case -> O(n log n), Average Case -> O(n log n), Worst Case ->
+    // O(n²)
+    // sc is Best Case -> O(log n), Average Case -> O(log n), Worst Case -> O(n)
+
+    public static int[] quickSort(int[] array) {
+        qS(array, 0, array.length - 1);
+        return array;
+    }
+
+    private static void qS(int[] array, int low, int high) {
+
+        if (low < high) {
+
+            int pIndex = partition(array, low, high);
+            qS(array, low, pIndex - 1); // left arr
+            qS(array, pIndex + 1, high); // right arr
+        }
+    }
+
+    private static int partition(int[] array, int low, int high) {
+
+        // arr fst ele as pivot
+        int pivot = array[low];
+        int i = low;
+        int j = high;
+
+        while (i < j) {
+            // finding next element > pivot stops at greater ele
+            while (array[i] <= pivot && i <= high - 1) {
+                i++;
+            }
+            // finding next element <= pivot stops at smaller ele
+            while (array[j] > pivot && j >= low + 1) {
+                j--;
+            }
+            // swapping small to left and large to right
+            if (i < j) {
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+
+        // swapping low pivot to crt place
+        int temp = array[low];
+        array[low] = array[j];
+        array[j] = temp;
+
+        return j; // partition ele
+    }
+
     public static void main(String[] args) {
 
         int[] arr = { 4, 6, 8, 1, 9, 7, 3, 5, 2 };
 
-        System.out.println(Arrays.toString(mergeSort(arr, arr.length)));
+        System.out.println(Arrays.toString(quickSort(arr)));
 
     }
 
